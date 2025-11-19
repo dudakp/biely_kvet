@@ -1,0 +1,4 @@
+shared stuff like:
+* shared widgets
+* loading and using sound or videoclips
+    * this will be placed in sub-package
