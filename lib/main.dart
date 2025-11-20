@@ -28,14 +28,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,12 +44,11 @@ class _MyHomePageState extends State<MyHomePage> {
               child: TextField(
                 keyboardType: TextInputType.number,
                 inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
+                  FilteringTextInputFormatter.digitsOnly,
                 ],
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Daj číslo otázky ty bazerant',
-
                 ),
               ),
             ),
@@ -78,9 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              const Text('Si bazerant'),
-                            ],
+                            children: <Widget>[const Text('Si bazerant')],
                           ),
                         ),
                       );
@@ -93,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {},
         tooltip: 'Spusti časovač',
         child: const Icon(Icons.hourglass_top_rounded),
       ),
