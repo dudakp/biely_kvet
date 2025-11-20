@@ -28,6 +28,4 @@ Predtým než pošleš PR, odpovedz úprimne – inak ťa čaká **výplach riti
 
 
 
-
-
 *Ďakujeme za PR. Nech ťa sila Orešánskeho vínka sprevádza.*
