@@ -1,0 +1,73 @@
+name: Release build
+
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build release artifacts (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: android-apk
+            os: ubuntu-latest
+            flutter-channel: stable
+            build-command: flutter build apk --release
+            artifact-path: build/app/outputs/flutter-apk/app-release.apk
+            artifact-name: app-android-apk
+
+          - target: android-aab
+            os: ubuntu-latest
+            flutter-channel: stable
+            build-command: flutter build appbundle --release
+            artifact-path: build/app/outputs/bundle/release/app-release.aab
+            artifact-name: app-android-aab
+
+          - target: web
+            os: ubuntu-latest
+            flutter-channel: stable
+            build-command: flutter build web --release
+            artifact-path: build/web
+            artifact-name: app-web-build
+
+          - target: ios
+            os: macos-latest
+            flutter-channel: stable
+            # build-command: flutter build ios --release --no-codesign
+            build-command: flutter build ipa --release --no-codesign
+            artifact-path: build/ios/ipa
+            artifact-name: app-ios-ipa
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Flutter (${{ matrix.flutter-channel }}) on ${{ matrix.os }}
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ matrix.flutter-channel }}
+          cache: true
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Flutter analyze
+        run: flutter analyze
+
+      - name: Flutter tests
+        run: flutter test
+
+      - name: Build (${{ matrix.target }})
+        run: ${{ matrix.build-command }}
+
+      - name: Upload artifact (${{ matrix.target }})
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: ${{ matrix.artifact-path }}

@@ -1,0 +1,46 @@
+name: New PR build
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  matrix-test:
+    name: Matrix Test (Flutter – ${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: android
+            os: ubuntu-latest
+            flutter-channel: stable
+
+          - target: web
+            os: ubuntu-latest
+            flutter-channel: stable
+
+          - target: ios
+            os: macos-latest
+            flutter-channel: stable
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Flutter (${{ matrix.flutter-channel }}) on ${{ matrix.os }}
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ matrix.flutter-channel }}
+          cache: true
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Flutter analyze
+        run: flutter analyze
+
+      - name: Flutter tests
+        run: flutter test
