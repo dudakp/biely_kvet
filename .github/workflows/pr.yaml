@@ -1,4 +1,4 @@
-name: Pull Request CI
+name: New PR build
 
 on:
   pull_request:
