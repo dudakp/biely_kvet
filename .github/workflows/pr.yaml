@@ -5,24 +5,9 @@ on:
     types: [ opened, synchronize, reopened ]
 
 jobs:
-  matrix-test:
-    name: Matrix Test (Flutter – ${{ matrix.target }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - target: android
-            os: ubuntu-latest
-            flutter-channel: stable
-
-          - target: web
-            os: ubuntu-latest
-            flutter-channel: stable
-
-          - target: ios
-            os: macos-latest
-            flutter-channel: stable
+  tests:
+    name: Flutter tests and analyze
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -30,10 +15,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Flutter (${{ matrix.flutter-channel }}) on ${{ matrix.os }}
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: ${{ matrix.flutter-channel }}
+          channel: stable
           cache: false
 
       - name: Flutter pub get
@@ -44,3 +29,45 @@ jobs:
 
       - name: Flutter tests
         run: flutter test
+
+  sanity-build:
+    name: Cross-Platform Builds
+    needs: tests
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: android
+            name: Android
+            os: ubuntu-latest
+            command: flutter build apk --debug
+
+          - target: web
+            name: Web
+            os: ubuntu-latest
+            command: flutter build web --release
+
+          - target: ios-simulator
+            name: iOS
+            os: macos-latest
+            command: flutter build ios --debug --simulator
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: false
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Build for ${{ matrix.target }}
+        run: ${{ matrix.command }}

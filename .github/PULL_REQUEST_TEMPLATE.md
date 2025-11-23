@@ -1,4 +1,4 @@
-# 🪵 Dano Drevo Pull Request Template
+# 🪵 Dano Drevo – Pull Request
 
 👋 Vitaj, mladý **bazerant**!  
 Predtým než pošleš PR, odpovedz úprimne – inak ťa čaká **výplach riti** a review od **profesora Šlotu**.
