@@ -31,21 +31,24 @@ jobs:
         run: flutter test
 
   sanity-build:
-    name: Sanity build matrix
+    name: Cross-Platform Builds
     needs: tests
     strategy:
       fail-fast: false
       matrix:
         include:
           - target: android
+            name: Android
             os: ubuntu-latest
             command: flutter build apk --debug
 
           - target: web
+            name: Web
             os: ubuntu-latest
             command: flutter build web --release
 
           - target: ios-simulator
+            name: iOS
             os: macos-latest
             command: flutter build ios --debug --simulator
 
