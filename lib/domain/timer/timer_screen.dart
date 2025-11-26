@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:biely_kvet/main.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:adaptive_widgets_flutter/adaptive_widgets.dart';
@@ -120,12 +123,7 @@ class _TimerScreenState extends State<TimerScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('Časovač')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
+        return Column(
           children: [
             Align(
               alignment: Alignment.centerLeft,
@@ -139,11 +137,15 @@ class _TimerScreenState extends State<TimerScreen> {
               spacing: 8,
               runSpacing: 4,
               children: _presetSeconds
-                  .map(
-                    (sec) => OutlinedButton(
+                  .map((sec) =>
+                  Platform.isIOS ? CupertinoButton(
                   onPressed: () => _setSeconds(sec),
                   child: Text('${sec}s'),
-                ),
+                )
+                  : OutlinedButton(
+                    onPressed: () => _setSeconds(sec),
+                    child: Text('${sec}s'),
+                  )
               )
                   .toList(),
             ),
@@ -208,9 +210,6 @@ class _TimerScreenState extends State<TimerScreen> {
                 OutlinedButton(onPressed: _reset, child: const Text('Reset')),
               ],
             ),
-          ],
-        ),
-      ),
-    );
+    ]);
   }
 }

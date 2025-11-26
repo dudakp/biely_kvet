@@ -59,36 +59,26 @@ class _AnswerScreenState extends State<AnswerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Hľadaj odpoveď'),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextField(
-                controller: _questionController,
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Daj číslo otázky, bazerant',
-                ),
-              ),
-              const SizedBox(height: 12),
-              FilledButton(
-                onPressed: _showAnswer,
-                child: const Text('Ukáž'),
-              ),
+      return  Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextField(
+            controller: _questionController,
+            keyboardType: TextInputType.number,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
             ],
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Daj číslo otázky, bazerant',
+            ),
           ),
-        ),
-      ),
-    );
+          const SizedBox(height: 12),
+          FilledButton(
+            onPressed: _showAnswer,
+            child: const Text('Ukáž'),
+          ),
+        ],
+      );
   }
 }
