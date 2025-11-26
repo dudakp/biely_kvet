@@ -14,6 +14,6 @@ class Routes {
     home: (_) => const HomeScreen(),
     answers: (_) => const AnswerScreen(),
     timer: (_) => const TimerScreen(),
-    rules: (_) => const RulesScreen(),
+    rules: (_) => RulesScreen(),
   };
 }
