@@ -1,4 +1,5 @@
-import 'package:biely_kvet/domain/core/adaptive/platform_aware.dart';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,8 +10,8 @@ void main() {
   runApp(BielyKvetApp());
 }
 
-class BielyKvetApp extends PlatformAwareStatelessWidget {
-  BielyKvetApp({super.key});
+class BielyKvetApp extends _PlatformAwareStatelessWidget {
+  const BielyKvetApp({super.key});
 
   @override
   Widget buildAndroid(BuildContext context) {
@@ -35,5 +36,21 @@ class BielyKvetApp extends PlatformAwareStatelessWidget {
       initialRoute: Routes.home,
       routes: Routes.all,
     );
+  }
+}
+
+abstract class _PlatformAwareWidget {
+  Widget buildIos(BuildContext context);
+
+  Widget buildAndroid(BuildContext context);
+}
+
+abstract class _PlatformAwareStatelessWidget extends StatelessWidget
+    implements _PlatformAwareWidget {
+  const _PlatformAwareStatelessWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Platform.isIOS ? buildIos(context) : buildAndroid(context);
   }
 }

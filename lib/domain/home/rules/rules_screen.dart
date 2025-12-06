@@ -1,14 +1,13 @@
-import 'package:biely_kvet/domain/core/adaptive/platform_aware.dart';
 import 'package:flutter/material.dart';
 
-class RulesScreen extends PlatformAwareStatefulWidget {
-  RulesScreen({super.key});
+class RulesScreen extends StatefulWidget {
+  const RulesScreen({super.key});
 
   @override
   State<RulesScreen> createState() => _RulesScreenState();
 }
 
-class _RulesScreenState extends PlatformAwareStatefulWidgetState<RulesScreen> {
+class _RulesScreenState extends State<RulesScreen> {
   final ScrollController _controller = ScrollController();
 
   late final List<Widget> _slivers = [
@@ -112,24 +111,4 @@ class _RulesScreenState extends PlatformAwareStatefulWidgetState<RulesScreen> {
       },
     );
   }
-  //
-  // @override
-  // Widget buildAndroid(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       title: const Text('Pravidlá hry'),
-  //     ),
-  //     body: build(context),
-  //   );
-  // }
-  //
-  // @override
-  // Widget buildIos(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       title: const Text('Pravidlá hry'),
-  //     ),
-  //     body: build(context),
-  //   );
-  // }
 }

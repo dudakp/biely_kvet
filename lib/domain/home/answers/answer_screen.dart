@@ -1,6 +1,6 @@
+import 'package:adaptive_widgets_flutter/adaptive_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:adaptive_widgets_flutter/adaptive_widgets.dart';
 
 class AnswerScreen extends StatefulWidget {
   const AnswerScreen({super.key});
@@ -30,9 +30,9 @@ class _AnswerScreenState extends State<AnswerScreen> {
 
     final number = int.tryParse(raw);
     if (number == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('To ani nie je číslo…')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('To ani nie je číslo…')));
       return;
     }
 
@@ -43,10 +43,7 @@ class _AnswerScreenState extends State<AnswerScreen> {
     await AdaptiveWidgets.showBottomActionSheet(
       context,
       title: Text('Otázka č. $number'),
-      message: Text(
-        answer,
-        textAlign: TextAlign.center,
-      ),
+      message: Text(answer, textAlign: TextAlign.center),
       actionButtons: [
         AdaptiveBottomSheetButtonBuilder(
           child: const Text('Zatvoriť'),
@@ -59,26 +56,21 @@ class _AnswerScreenState extends State<AnswerScreen> {
 
   @override
   Widget build(BuildContext context) {
-      return  Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextField(
-            controller: _questionController,
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-            ],
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Daj číslo otázky, bazerant',
-            ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextField(
+          controller: _questionController,
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: 'Daj číslo otázky, bazerant',
           ),
-          const SizedBox(height: 12),
-          FilledButton(
-            onPressed: _showAnswer,
-            child: const Text('Ukáž'),
-          ),
-        ],
-      );
+        ),
+        const SizedBox(height: 12),
+        FilledButton(onPressed: _showAnswer, child: const Text('Ukáž')),
+      ],
+    );
   }
 }

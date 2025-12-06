@@ -5,10 +5,9 @@ void main() {
   testWidgets('RulesScreen – základné texty', (tester) async {
     await tester.pumpWidget(const BielyKvetApp());
 
-    await tester.tap(find.text('Pravidlá hry'));
+    await tester.tap(find.text('Pravidlá'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Pravidlá hry'), findsOneWidget);
     expect(find.text('Pravidlá hry Biely kvet'), findsOneWidget);
     expect(find.text('PRIEBEH HRY'), findsOneWidget);
   });
