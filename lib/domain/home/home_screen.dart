@@ -1,89 +1,126 @@
+import 'dart:async';
+
+import 'package:biely_kvet/domain/home/rules/rules_screen.dart';
+import 'package:biely_kvet/domain/home/timer/timer_dialog.dart';
+import 'package:biely_kvet/l10n/app_localizations.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:adaptive_widgets_flutter/adaptive_widgets.dart';
-import '../../config/routes.dart';
+
+import 'answers/answer_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  Future<void> _showInfoDialog(BuildContext context) {
-    return AdaptiveWidgets.showDialog(
-      context,
-      title: 'Biely kvet',
-      content: 'Dano Drevo companion app.\n\nVyber si, čo chceš robiť, ty bazerant.',
-      actionButtons: [
-        AdaptiveDialogButtonBuilder(
-          text: 'OK',
-          onPressed: (ctx) => Navigator.of(ctx).pop(),
+  @override
+  Widget build(BuildContext context) {
+    return TabbedPage(
+      tabBarItems: [
+        TabBarItem(
+          // TODO: asi custom ikonky
+          icon: const Icon(CupertinoIcons.question),
+          label: AppLocalizations.of(context)!.questionsTabTitle,
+          page: TabBarContent(
+            pageContent: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: AnswerScreen(),
+            ),
+          ),
+        ),
+        TabBarItem(
+          // TODO: asi custom ikonky
+          icon: const Icon(CupertinoIcons.book),
+          label: AppLocalizations.of(context)!.rulesTabTitle,
+          page: TabBarContent(
+            pageContent: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: RulesScreen(),
+            ),
+          ),
         ),
       ],
     );
   }
+}
 
-  Widget _menuButton({
-    required BuildContext context,
-    required IconData icon,
-    required String label,
-    required String route,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: FilledButton.icon(
-        onPressed: () => Navigator.pushNamed(context, route),
-        icon: Icon(icon),
-        label: Text(label),
-        style: FilledButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 18),
-        ),
-      ),
+class TabBarItem {
+  final Widget icon;
+  final Widget? activeIcon;
+  final String label;
+  final TabBarContent page;
+
+  TabBarItem({
+    required this.icon,
+    required this.label,
+    this.activeIcon,
+    required this.page,
+  });
+}
+
+class TabBarContent extends StatelessWidget {
+  final Widget pageContent;
+
+  const TabBarContent({super.key, required this.pageContent});
+
+  @override
+  Widget build(BuildContext context) {
+    return pageContent;
+  }
+}
+
+class TabbedPage extends StatefulWidget {
+  final List<TabBarItem> tabBarItems;
+
+  const TabbedPage({super.key, required this.tabBarItems});
+
+  @override
+  State<TabbedPage> createState() => _AdaptiveTabbedPageState();
+}
+
+class _AdaptiveTabbedPageState extends State<TabbedPage> {
+  int currentPageIndex = 0;
+
+  Future<void> _showTimerRunningDialog() async {
+    await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) => TimerRunningDialog(),
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    var allPages = widget.tabBarItems.map((e) => e.page).toList();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Biely kvet'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.info_outline),
-            tooltip: 'Info',
-            onPressed: () => _showInfoDialog(context),
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          _showTimerRunningDialog();
+        },
+        shape: CircleBorder(),
+        child: Icon(Icons.timer),
       ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 380),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _menuButton(
-                  context: context,
-                  icon: Icons.search,
-                  label: 'Hľadať odpoveď',
-                  route: Routes.answers,
-                ),
-                _menuButton(
-                  context: context,
-                  icon: Icons.timer,
-                  label: 'Časovač',
-                  route: Routes.timer,
-                ),
-                _menuButton(
-                  context: context,
-                  icon: Icons.rule,
-                  label: 'Pravidlá hry',
-                  route: Routes.rules,
-                ),
-              ],
-            ),
-          ),
-        ),
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        indicatorColor: Colors.amber,
+        selectedIndex: currentPageIndex,
+        destinations: widget.tabBarItems
+            .map(
+              (item) => NavigationDestination(
+                icon: item.icon,
+                label: item.label,
+                selectedIcon: item.activeIcon,
+              ),
+            )
+            .toList(),
       ),
+      body: allPages[currentPageIndex],
     );
   }
 }
