@@ -1,6 +1,5 @@
 import 'package:adaptive_widgets_flutter/adaptive_widgets.dart';
 import 'package:biely_kvet/l10n/app_localizations.dart';
-import 'package:biely_kvet/l10n/app_localizations_sk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
