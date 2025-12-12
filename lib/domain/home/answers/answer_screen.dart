@@ -1,4 +1,6 @@
 import 'package:adaptive_widgets_flutter/adaptive_widgets.dart';
+import 'package:biely_kvet/l10n/app_localizations.dart';
+import 'package:biely_kvet/l10n/app_localizations_sk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -23,7 +25,7 @@ class _AnswerScreenState extends State<AnswerScreen> {
 
     if (raw.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Daj číslo otázky, bazerant.')),
+         SnackBar(content: Text(AppLocalizations.of(context)!.questionNumberInputLabel)),
       );
       return;
     }
@@ -63,13 +65,13 @@ class _AnswerScreenState extends State<AnswerScreen> {
           controller: _questionController,
           keyboardType: TextInputType.number,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             border: OutlineInputBorder(),
-            labelText: 'Daj číslo otázky, bazerant',
+            labelText: AppLocalizations.of(context)!.questionNumberInputLabel,
           ),
         ),
         const SizedBox(height: 12),
-        FilledButton(onPressed: _showAnswer, child: const Text('Ukáž')),
+        FilledButton(onPressed: _showAnswer, child:  Text(AppLocalizations.of(context)!.showAnswerBtn)),
       ],
     );
   }

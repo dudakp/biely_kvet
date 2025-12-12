@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:adaptive_widgets_flutter/adaptive_widgets.dart';
 import 'package:biely_kvet/domain/home/rules/rules_screen.dart';
+import 'package:biely_kvet/domain/home/timer/timer_dialog.dart';
+import 'package:biely_kvet/l10n/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
         TabBarItem(
           // TODO: asi custom ikonky
           icon: const Icon(CupertinoIcons.question),
-          label: 'Odpovede',
+          label: AppLocalizations.of(context)!.questionsTabTitle,
           page: TabBarContent(
             pageContent: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
         TabBarItem(
           // TODO: asi custom ikonky
           icon: const Icon(CupertinoIcons.book),
-          label: 'Pravidlá',
+          label: AppLocalizations.of(context)!.rulesTabTitle,
           page: TabBarContent(
             pageContent: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -79,93 +79,16 @@ class TabbedPage extends StatefulWidget {
 class _AdaptiveTabbedPageState extends State<TabbedPage> {
   int currentPageIndex = 0;
 
-  // TODO: skusit oddelit celu implementaciu timera do separatnej triedy
-  Timer? _timer;
-  int _remainingSeconds = 0;
-  int _initialSeconds = 0;
-  bool _isTimerActive = false;
-  static const _timerDuration = 60;
-
-  late StreamController<int> _events;
-
-  @override
-  initState() {
-    super.initState();
-    _events = StreamController<int>.broadcast();
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _events.close();
-    super.dispose();
-  }
-
-  void _resetTimer() {
-    _timer?.cancel();
-    setState(() {
-      _remainingSeconds = _initialSeconds;
-    });
-  }
-
-  void _setSeconds(int value) {
-    if (value <= 0) return;
-
-    setState(() {
-      _initialSeconds = value;
-      _remainingSeconds = value;
-    });
-  }
-
-  void _start() {
-    if (_remainingSeconds <= 0) {
-      _setSeconds(_timerDuration);
-      if (_remainingSeconds <= 0) return;
-    }
-
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) async {
-      if (!mounted) {
-        _timer?.cancel();
-        return;
-      }
-
-      if (_remainingSeconds <= 1) {
-        setState(() {
-          _remainingSeconds = 0;
-        });
-        _timer?.cancel();
-        await _showFinishedDialog();
-      } else {
-        setState(() {
-          _remainingSeconds--;
-          _events.add(_remainingSeconds);
-        });
-      }
-    });
-  }
-
-  Future<void> _showFinishedDialog() {
-    if (_isTimerActive) {
-      Navigator.of(context).pop();
-    }
-    return AdaptiveWidgets.showDialog(
-      context,
-      title: 'Časovač',
-      content: 'Koniec, bazerant.',
-      actionButtons: [
-        AdaptiveDialogButtonBuilder(
-          text: 'OK',
-          onPressed: (ctx) => Navigator.of(ctx).pop(),
-        ),
-      ],
+  Future<void> _showTimerRunningDialog() async {
+    await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) => TimerRunningDialog(),
+        );
+      },
     );
-  }
-
-  String get _formatted {
-    final m = _remainingSeconds ~/ 60;
-    final s = _remainingSeconds % 60;
-    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -174,45 +97,7 @@ class _AdaptiveTabbedPageState extends State<TabbedPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          setState(() {
-            _isTimerActive = true;
-          });
-          _start();
-          await showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (context) {
-              return StatefulBuilder(
-                builder: (context, setState) {
-                  var stopTimerLabel = const Text('Stop');
-                  return AlertDialog.adaptive(
-                        actions: [
-                          // TODO: asi pre iIOS toto nebude vhodne, pouzit CupertinoDialogAction
-                          Platform.isIOS
-                              ? CupertinoDialogAction(
-                                  onPressed: () {
-                                    _closeTimerDialog(setState, context);
-                                  },
-                                  child: stopTimerLabel,
-                                )
-                              : TextButton(
-                                  onPressed: () {
-                                    _closeTimerDialog(setState, context);
-                                  },
-                                  child: stopTimerLabel,
-                                ),
-                        ],
-                        title: const Text('Časovač'),
-                        content: StreamBuilder(
-                          stream: _events.stream,
-                          builder: (context, snapshot) => Text(_formatted),
-                        ),
-                      )
-                      as Widget;
-                },
-              );
-            },
-          );
+          _showTimerRunningDialog();
         },
         shape: CircleBorder(),
         child: Icon(Icons.timer),
@@ -237,13 +122,5 @@ class _AdaptiveTabbedPageState extends State<TabbedPage> {
       ),
       body: allPages[currentPageIndex],
     );
-  }
-
-  void _closeTimerDialog(StateSetter setState, BuildContext context) {
-    setState(() {
-      _isTimerActive = false;
-    });
-    Navigator.of(context).pop();
-    _resetTimer();
   }
 }

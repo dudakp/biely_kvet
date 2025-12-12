@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'config/app_theme.dart';
 import 'config/routes.dart';
+import 'l10n/app_localizations.dart';
 
 void main() {
   runApp(BielyKvetApp());
@@ -20,7 +22,13 @@ class BielyKvetApp extends _PlatformAwareStatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.materialLightTheme,
       darkTheme: AppTheme.cupertinoDarkTheme,
-
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [Locale('sk')],
       themeMode: ThemeMode.system,
       initialRoute: Routes.home,
       routes: Routes.all,
@@ -33,6 +41,12 @@ class BielyKvetApp extends _PlatformAwareStatelessWidget {
       title: 'Biely kvet',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.cupertinoThemeData,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [Locale('sk')],
       initialRoute: Routes.home,
       routes: Routes.all,
     );

@@ -1,10 +1,23 @@
 import 'package:biely_kvet/domain/home/answers/answer_screen.dart';
+import 'package:biely_kvet/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../utils.dart';
 
 void main() {
   Widget wrapScreen(Widget child) {
-    return MaterialApp(home: Scaffold(body: child));
+    return MaterialApp(
+      home: Scaffold(body: child),
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [Locale('sk')],
+    );
   }
 
   testWidgets('AnswerScreen – prázdny vstup zobrazí upozornenie', (
@@ -12,14 +25,20 @@ void main() {
   ) async {
     await tester.pumpWidget(wrapScreen(AnswerScreen()));
 
-    final fieldFinder = find.byType(TextField);
-    expect(fieldFinder, findsOneWidget);
+    expect(find.byType(TextField), findsOneWidget);
 
-    await tester.tap(find.text('Ukáž'));
+    await tester.tap(find.text((await slovakAppLocalization).showAnswerBtn));
     await tester.pumpAndSettle();
 
+    var questionInputLabel =
+        (await slovakAppLocalization).questionNumberInputLabel;
+
+    var warningSnackBar = find.byType(SnackBar);
     expect(
-      find.text('Daj číslo otázky, bazerant.'),
+      find.descendant(
+        of: warningSnackBar,
+        matching: find.text(questionInputLabel),
+      ),
       findsOneWidget,
       reason: 'Pri prázdnom vstupe sa má zobraziť upozornenie.',
     );
@@ -32,20 +51,21 @@ void main() {
 
       // zadam cislo otazky a zobrazim odpoved
       await tester.enterText(find.byType(TextField), '1');
-      await tester.tap(find.text('Ukáž'));
+      await tester.tap(find.text((await slovakAppLocalization).showAnswerBtn));
       await tester.pumpAndSettle();
       expect(
         find.textContaining('Otázka č. '),
         findsOneWidget,
         reason: 'Po zadaní správneho čísla sa má zobraziť dialóg.',
       );
-      expect(find.text('Zatvoriť'), findsOneWidget);
+      var closeBtnLabel = (await slovakAppLocalization).closeBtn;
+      expect(find.text(closeBtnLabel), findsOneWidget);
 
       // zatvorim dialog s odpovedou
-      await tester.tap(find.text('Zatvoriť'));
+      await tester.tap(find.text(closeBtnLabel));
       await tester.pumpAndSettle();
       expect(
-        find.text('Zatvoriť'),
+        find.text(closeBtnLabel),
         findsNothing,
         reason: 'Po kliknutí na zatváracie tlačidlo sa má dialóg zavrieť.',
       );

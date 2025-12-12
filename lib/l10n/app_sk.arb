@@ -1,0 +1,15 @@
+{
+  "helloWorld": "Hello World!",
+  "@helloWorld": {
+    "description": "The conventional newborn programmer greeting"
+  },
+  "questionsTabTitle": "Otázky",
+  "questionNumberInputLabel": "Daj číslo otázky, bazerant",
+  "showAnswerBtn": "Ukáž",
+  "closeBtn": "Zatvoriť",
+  "rulesTabTitle": "Pravidlá",
+  "timerDialogTitle": "Časovač",
+  "timerDoneText": "Koniec, bazerant",
+  "timerDoneButtonLabel": "OK",
+  "timerDialogStopButton": "Stop"
+}
